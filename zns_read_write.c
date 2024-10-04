@@ -29,8 +29,9 @@ static void __increase_write_ptr(struct zns_ftl *zns_ftl, uint32_t zid, uint32_t
 		release_zone_resource(zns_ftl, OPEN_ZONE);
 		release_zone_resource(zns_ftl, ACTIVE_ZONE);
 
-		if (zone_descs[zid].zrwav)
+		if (zone_descs[zid].zrwav){
 			ASSERT(0);
+		}
 
 		change_zone_state(zns_ftl, zid, ZONE_STATE_FULL);
 	} else if (cur_write_ptr > (zone_to_slba(zns_ftl, zid) + zone_capacity)) {
@@ -213,6 +214,7 @@ static bool __zns_write(struct zns_ftl *zns_ftl, struct nvmev_request *req,
 
 out:
 	ret->status = status;
+	ret->result = slba;
 	if ((cmd->control & NVME_RW_FUA) ||
 	    (spp->write_early_completion == 0)) /*Wait all flash operations*/
 		ret->nsecs_target = nsecs_latest;
@@ -369,7 +371,7 @@ static bool __zns_write_zrwa(struct zns_ftl *zns_ftl, struct nvmev_request *req,
 
 out:
 	ret->status = status;
-
+	ret->result = slba;
 	if ((cmd->control & NVME_RW_FUA) ||
 	    (spp->write_early_completion == 0)) /*Wait all flash operations*/
 		ret->nsecs_target = nsecs_latest;

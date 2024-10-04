@@ -270,6 +270,7 @@ struct nvmev_request {
 struct nvmev_result {
 	uint32_t status;
 	uint64_t nsecs_target;
+	uint64_t result;
 };
 
 struct nvmev_ns {
